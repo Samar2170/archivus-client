@@ -27,13 +27,12 @@ import {
 } from '@heroicons/react/24/outline'
 import { ChevronDownIcon, MagnifyingGlassIcon } from '@heroicons/react/20/solid'
 import { usePathname } from 'next/navigation'
-import path from 'path'
 
 const navigation = [
   {name: 'Home', href: '/', icon: HomeIcon, current: false },
   { name: 'Add Folder', href: '/addFolder', icon: FolderIcon, current: true },
   { name: 'Upload Files', href: '/uploads', icon: ClipboardDocumentIcon, current: false },
-  { name: 'List Files', href: '#', icon: ListBulletIcon, current: false },
+  { name: 'List Files', href: '/list', icon: ListBulletIcon, current: false },
 ]
 const teams = [
   { id: 1, name: 'Heroicons', href: '#', initial: 'H', current: false },

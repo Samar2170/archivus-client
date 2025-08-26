@@ -15,9 +15,23 @@ export interface FileMetaData {
     NavigationPath: string;
 }
 
+export interface ListFileMetaData {
+    ID: number;
+    Name: string;
+    IsImage: boolean;
+    FilePath: string;
+    CreatedAt: string;
+    SizeInMb: number;
+    UpdatedAt: string;
+}
+
 export interface getFilesByFolderResponse {
     files: FileMetaData[];
     size: number;
+}
+
+export interface filesListResponse {
+    files: ListFileMetaData[];
 }
 
 export function getFilesByFolder(folder: string) {
@@ -35,4 +49,10 @@ export function uploadFiles(folder: string, files: File[]) {
         body: formData,
     },
     );
+}
+
+export function getFilesList(search: string) {
+    return apiFetch<filesListResponse>(`${BASE_URL}files/list/?search=${search}`, {
+        method: "GET",
+    });
 }
