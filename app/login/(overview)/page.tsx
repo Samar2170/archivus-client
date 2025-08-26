@@ -1,5 +1,4 @@
 'use client';
-import Image from 'next/image'
 import { useRouter,useSearchParams } from 'next/navigation';
 import { Suspense, useEffect, useState } from 'react';
 import { useAuthStore } from '@/app/store/auth';
@@ -23,7 +22,8 @@ function LoginForm() {
     e.preventDefault();
     setLoading(true);
     try {
-        await signinUser(username,password,pin);
+        const response = await signinUser(username,password,pin);
+        
         router.replace('/');
     } catch (err) {
         setError('Login failed. Please check your credentials.');
@@ -145,8 +145,6 @@ export default function Page() {
       <>
         <div className="flex min-h-full flex-1 flex-col justify-center py-12 sm:px-6 lg:px-8">
           <div className="sm:mx-auto sm:w-full sm:max-w-md">
-            
-              <Image src={'/Stitchlanelogo.svg'} className='mx-auto h-20 w-auto' alt="logo" width={400} height={400}/>
             <h2 className="mt-6 text-center text-2xl font-bold leading-9 tracking-tight text-gray-100">
               Sign in to your account
             </h2>

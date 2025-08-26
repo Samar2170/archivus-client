@@ -1,14 +1,24 @@
 // src/utils/fetcher.ts
 export async function apiFetch<T>(
     url: string,
-    options: RequestInit = {}
+    options: RequestInit = {},
   ): Promise<T> {
+
+    const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+    const headers: Record<string,string> = {
+      // Authorization: token ? `Bearer ${token}` : "",
+      // ...(options.headers || {}),
+      ...(options.headers as Record<string, string>),
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    }
+    if (!(options.body instanceof FormData)) {
+      headers["Content-Type"] = "application/json";
+    }
+
+
     const res = await fetch(url, {
       ...options,
-      headers: {
-        "Content-Type": "application/json",
-        ...(options.headers || {}),
-      },
+      headers,
     });
   
     if (!res.ok) {

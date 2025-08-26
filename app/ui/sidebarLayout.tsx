@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
   Dialog,
   DialogBackdrop,
@@ -26,10 +26,13 @@ import {
   XMarkIcon,
 } from '@heroicons/react/24/outline'
 import { ChevronDownIcon, MagnifyingGlassIcon } from '@heroicons/react/20/solid'
+import { usePathname } from 'next/navigation'
+import path from 'path'
 
 const navigation = [
-  { name: 'Add Folder', href: '#', icon: FolderIcon, current: true },
-  { name: 'Upload Files', href: '#', icon: ClipboardDocumentIcon, current: false },
+  {name: 'Home', href: '/', icon: HomeIcon, current: false },
+  { name: 'Add Folder', href: '/addFolder', icon: FolderIcon, current: true },
+  { name: 'Upload Files', href: '/uploads', icon: ClipboardDocumentIcon, current: false },
   { name: 'List Files', href: '#', icon: ListBulletIcon, current: false },
 ]
 const teams = [
@@ -47,18 +50,18 @@ function classNames(...classes: any[]) {
 }
 
 export default function SidebarLayout({children}:{children: React.ReactNode}) {
-  const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [navItems, setNavItems] = useState(navigation)
 
+  const pathname = usePathname();
+  useEffect(() => {
+    setNavItems(navigation.map((item) => ({
+      ...item,
+      current: item.href === pathname,
+    })))
+  }, [pathname])
   return (
     <>
-      {/*
-        This example requires updating your template:
-
-        ```
-        <html class="h-full bg-white dark:bg-gray-900">
-        <body class="h-full">
-        ```
-      */}
       <div>
         <Dialog open={sidebarOpen} onClose={setSidebarOpen} className="relative z-50 lg:hidden">
           <DialogBackdrop
@@ -98,7 +101,9 @@ export default function SidebarLayout({children}:{children: React.ReactNode}) {
                   <ul role="list" className="flex flex-1 flex-col gap-y-7">
                     <li>
                       <ul role="list" className="-mx-2 space-y-1">
-                        {navigation.map((item) => (
+                        {
+                        navItems.map((item) => (
+                          
                           <li key={item.name}>
                             <a
                               href={item.href}
@@ -193,7 +198,7 @@ export default function SidebarLayout({children}:{children: React.ReactNode}) {
               <ul role="list" className="flex flex-1 flex-col gap-y-7">
                 <li>
                   <ul role="list" className="-mx-2 space-y-1">
-                    {navigation.map((item) => (
+                    {navItems.map((item) => (
                       <li key={item.name}>
                         <a
                           href={item.href}

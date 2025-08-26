@@ -11,20 +11,20 @@ interface AuthState {
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
-  user: typeof window !=="undefined" ? sessionStorage.getItem("user") : null,
-  token: typeof window !=="undefined" ? sessionStorage.getItem("token") : null,
-  isAuthenticated: typeof window !=="undefined" ? !!sessionStorage.getItem("token") : false,
+  user: typeof window !=="undefined" ? localStorage.getItem("user") : null,
+  token: typeof window !=="undefined" ? localStorage.getItem("token") : null,
+  isAuthenticated: typeof window !=="undefined" ? !!localStorage.getItem("token") : false,
 
   signinUser: async (username: string, password: string,pin:string) => {
     const res = await signin(username, password, pin);
-    sessionStorage.setItem("token", res.token);
-    sessionStorage.setItem("user", username);
+    localStorage.setItem("token", res.token);
+    localStorage.setItem("user", username);
     set({ user: username, token: res.token, isAuthenticated: true });
   },
 
   signoutUser: () => {
-    sessionStorage.removeItem("token");
-    sessionStorage.removeItem("user");
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
     set({ user: null, token: null, isAuthenticated: false });
   },
 }));
