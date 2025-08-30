@@ -2,17 +2,21 @@
 import { useEffect,useState } from "react";
 import { FileMetaData, ListFileMetaData, getFilesByFolder, getFilesByFolderResponse } from "../../api/files";
 import { getFilesList } from "@/app/api/files";
+import { useSearchParams } from "next/navigation";
 
 
 export default function Page() {
     const [files, setFiles] = useState<ListFileMetaData[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
+    const searchParams = useSearchParams();
+
 
     useEffect(() => {
         async function loadFiles() {
           try {
             setLoading(true);
-            const data = await getFilesList('');
+            const query = searchParams.get('search') || '';
+            const data = await getFilesList(query);
             console.log(data);
             setFiles(data.files || []);
           } catch (err) {
@@ -22,7 +26,7 @@ export default function Page() {
           }
         }
         loadFiles();
-    },[]);
+    },[searchParams]);
     
     if (loading) return <p>Loading...</p>;    
     return (

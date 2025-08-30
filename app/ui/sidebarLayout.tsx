@@ -27,6 +27,9 @@ import {
 } from '@heroicons/react/24/outline'
 import { ChevronDownIcon, MagnifyingGlassIcon } from '@heroicons/react/20/solid'
 import { usePathname } from 'next/navigation'
+import { useAuth } from '../hooks/useAuth'
+import { useAuthStore } from '../store/auth'
+import { useSearchParams, useRouter } from 'next/navigation'
 
 const navigation = [
   {name: 'Home', href: '/', icon: HomeIcon, current: false },
@@ -51,8 +54,18 @@ function classNames(...classes: any[]) {
 export default function SidebarLayout({children}:{children: React.ReactNode}) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [navItems, setNavItems] = useState(navigation)
-
+  const {user} = useAuthStore();
   const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const { replace } = useRouter();
+  
+
+  const handleSearch = (query: string) => {
+    const params = new URLSearchParams(searchParams);
+    params.set('search', query);
+    replace(`/list?${params.toString()}`);
+  }
+
   useEffect(() => {
     setNavItems(navigation.map((item) => ({
       ...item,
@@ -87,12 +100,12 @@ export default function SidebarLayout({children}:{children: React.ReactNode}) {
                 <div className="relative flex h-16 shrink-0 items-center">
                   <img
                     alt="Your Company"
-                    src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600"
+                    src="/archivuslogo.png"
                     className="h-8 w-auto dark:hidden"
                   />
                   <img
                     alt="Your Company"
-                    src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=500"
+                    src="/archivuslogo.png"
                     className="h-8 w-auto not-dark:hidden"
                   />
                 </div>
@@ -184,13 +197,13 @@ export default function SidebarLayout({children}:{children: React.ReactNode}) {
             <div className="flex h-16 shrink-0 items-center">
               <img
                 alt="Your Company"
-                src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600"
-                className="h-8 w-auto dark:hidden"
+                src="/archivuslogo.png"
+                className="h-12 w-auto dark:hidden"
               />
               <img
                 alt="Your Company"
-                src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=500"
-                className="h-8 w-auto not-dark:hidden"
+                src="/archivuslogo.png"
+                className="h-12 w-auto not-dark:hidden"
               />
             </div>
             <nav className="flex flex-1 flex-col">
@@ -288,7 +301,9 @@ export default function SidebarLayout({children}:{children: React.ReactNode}) {
               <form action="#" method="GET" className="grid flex-1 grid-cols-1">
                 <input
                   name="search"
-                  placeholder="Search"
+                  defaultValue={searchParams.get('search')?.toString()}
+                  onChange={(e) => handleSearch(e.target.value)}
+                  // onChange=
                   aria-label="Search"
                   className="col-start-1 row-start-1 block size-full bg-white pl-8 text-base text-gray-900 outline-hidden placeholder:text-gray-400 sm:text-sm/6 dark:bg-gray-900 dark:text-white dark:placeholder:text-gray-500"
                 />
@@ -311,14 +326,12 @@ export default function SidebarLayout({children}:{children: React.ReactNode}) {
                   <MenuButton className="relative flex items-center">
                     <span className="absolute -inset-1.5" />
                     <span className="sr-only">Open user menu</span>
-                    <img
-                      alt=""
-                      src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                      className="size-8 rounded-full bg-gray-50 outline -outline-offset-1 outline-black/5 dark:bg-gray-800 dark:outline-white/10"
-                    />
+                    <div className="flex items-center justify-center w-10 h-10 rounded-full bg-blue-500 text-white font-semibold text-lg shadow-md">
+                      {user?.at(0)?.toUpperCase()}
+                    </div>
                     <span className="hidden lg:flex lg:items-center">
                       <span aria-hidden="true" className="ml-4 text-sm/6 font-semibold text-gray-900 dark:text-white">
-                        Tom Cook
+                        {user}
                       </span>
                       <ChevronDownIcon aria-hidden="true" className="ml-2 size-5 text-gray-400 dark:text-gray-500" />
                     </span>
